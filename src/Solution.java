@@ -1,290 +1,162 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Scanner;
 
 public class Solution 
 {
 
 	public static void main(String[] args) throws Exception 
 	{
-		
-		int lengthOfArray ;
-		
-		
+		//Number of elements
+		int numberOfElement ;
+
+		//declare object to read a file
 		BufferedReader br = new BufferedReader(new FileReader("input"));
 		
+		//read file
+		numberOfElement = Integer.parseInt(br.readLine());
 		
-		lengthOfArray = Integer.parseInt(br.readLine());
+		
+		//Declare arrays
+		int elements[] = new int[numberOfElement + 1];
+		boolean check[] = new boolean[numberOfElement + 1];
+		int ch[] = new int[numberOfElement + 1];
 		
 		
-		int array[] = new int[lengthOfArray + 1];
-		boolean check[] = new boolean[lengthOfArray + 1];
-		
+		//read file
 		String tmp = br.readLine(); 
-		String elements[] = tmp.split(" ");
+		String ele[] = tmp.split(" ");
 		
 		
-		for (int i = 1; i <= lengthOfArray ; i++) 
+		//Initialize array
+		for (int i = 1; i <= numberOfElement ; i++) 
 		{
-			array[i] = Integer.parseInt(elements[i - 1]);
+			elements[i] = Integer.parseInt(ele[i - 1]);
 			check[i] =true;
 		}
 		
 		String tmp1 = br.readLine(); 
 		String elements1[] = tmp1.split(" ");
 		
-		int p =Integer.parseInt( elements1[0] );
 		
-		int q = Integer.parseInt(elements1[1] );
+		int P =Integer.parseInt( elements1[0] );
+		int Q = Integer.parseInt(elements1[1] );
 		
+
 		
 		long startTime = System.currentTimeMillis();
 		
-		Arrays.sort(array);
+
+//Logic starts from here
 		
-		
-		
-		
-		int x= 0;
-		int result = 0;
+		int max = 0;
 		int answer = 0 ;
 		boolean first = true;
-		boolean allGreater = false;
+		int incrementJ  = 1;
+		int currentI = P;
 		
-		int r  = 1;
+		//sort the array
+		Arrays.sort(elements);
 		
-		int count = 0;
-		int e = p;
-		
-		
-		for (int i = p; i <= q; i++)
+		for (int i = P; i <= Q; i++)
 		{
 			int min = 1000000000; 
-			int map;
-			int c = 0;
-			for (int j = r; j <= lengthOfArray; j++) 
+			
+			for (int j = incrementJ; j <= numberOfElement; j++) 
 			{
-				
-				System.out.println("i " + i + " array : " + array[j]);
-				
-				count++;
-				
-				c = j;
-		
-				
-				if(array[j] == i)
+				if(elements[j] == i)
 				{
-					
-					System.out.println("1");
 					min = 0;
-					r++;
-					e =i ;
+					incrementJ++;
+					currentI =i ;
 					break;
 				}
-				else if(i < array[j])
+				else if(i < elements[j])
 				{
 					if(j == 1)
 					{
-						System.out.println("2");
-						min = Math.abs(array[j] - i);
-//						i = array[j];
-						e = i;
+						min = Math.abs(elements[j] - i);
+						i = elements[j];
+						currentI = i;
 						break;
 					}
 					else
 					{
-						if(array[j - 1] <=  i &&  i <= array[j])
+						if(elements[j - 1] <=  i &&  i <= elements[j])
 						{
-							System.out.println("3");
+							if(check[j])
+							{
+								ch[j] = i +  ((elements[j] - elements[j - 1] )/ 2) ;
+								check[j] = false;
+							}
 							
-							int t1 = Math.abs(array[j] - i); 
-							int t2  = Math.abs(array[j - 1] - i); 
+							if(i == ch[j] )
+							{
+								i = elements[j];
+							}
+							
+							int t1 = Math.abs(elements[j] - i); 
+							int t2  = Math.abs(elements[j - 1] - i); 
 							if(t1 < t2)
 							{
 								min = t1;
 								
-							}else
+							}
+							else
 							{
 								min = t2;
 							}
-							if(check[j])
-							{
-								i = i +  ((array[j] - array[j - 1] )/ 2)- 2 ;
-								check[j] = false;
-							}
-							e = i;
-							
-							System.out.println("i : " + i + " j " + j);
+							currentI = i;
 							break;
-							}
+						}
 					}
 				}
 				else
 				{
-					System.out.println("4");
-					r++;
+					incrementJ++;
 				}
 			}
 			
 			if(min == 1000000000 )
 			{
-				min = Math.abs(array[lengthOfArray] - q);
-				allGreater = true;
-//				System.out.println("these many times :"  + i);
-//				i = q-2;
-				
-				map = min;
+				min = Math.abs(elements[numberOfElement] - Q);
 				
 				if(first)
 				{
-					result = map;
-					answer = p;
+					max = min;
+					answer = P;
 					first = false;
 				}
 				else
 				{
-					if(map > result)
+					if(min > max)
 					{
-						result = map;
-						answer = q;
+						max = min;
+						answer = Q;
 					}
 				}
-				
 				break;
 			}
 			else
 			{
-				map = min;
-				
 				if(first)
 				{
-					result = map;
-					answer = p;
+					max = min;
+					answer = P;
 					first = false;
 				}
 				else
 				{
-					if(map > result)
+					if(min > max)
 					{
-						result = map;
-						answer = e;
-						
+						max = min;
+						answer = currentI;
 					}
 				}
-				
-				
 			}
-			
 		}
-		
-	System.out.println("count : " + count);
-		
-		
 
-		/*
-			if(array[j] <=  i &&  i <= array[j + 1] )
-					{
-						int t1 = Math.abs(array[j] - i); 
-						int t2  = Math.abs(array[j + 1] - i); 
-						if(t1 < t2)
-						{
-							min = t1;
-							
-						}else
-						{
-							min = t2;
-						}
-						break;
-					}
-					else
-					{
-						min = Math.abs(array[j] - i);
-						break;
-					}		
-		 */
-				
-				
-/*					
-					if(array[j - 1] <=  i &&  i <= array[j])
-					{
-						int t1 = Math.abs(array[j] - i); 
-						int t2  = Math.abs(array[j - 1] - i); 
-						if(t1 < t2)
-						{
-							min = t1;
-							
-						}else
-						{
-							min = t2;
-						}
-						break;
-					}
-*/					
-				
-				
-		
-		
-/*		
-		int map ;
-		
-		int result = 0;
-		int answer = 0 ;
-		boolean first = true;
-		
-		int r = 1;
-		for (int i = p; i <= q; i++) 
-		{
-			int min =1000000000;
-			
-			for (int j = r; j <= lengthOfArray; j++) 
-			{
-				int tm = Math.abs(array[j] - i);
-				
-				if(array[j] < p)
-				{
-					r = j;
-				}
-				
-				
-				if(min > tm)
-				{
-					min = tm;
-				}
-				if(min == 0)
-				{
-					break;
-				}
-			}
-			map = min;
-			
-			if(first)
-			{
-				result = map;
-				answer = i;
-				first = false;
-			}
-			else
-			{
-				if(map > result)
-				{
-					result = map;
-					answer = i;
-				}
-			}
-					
-		}
-		
-		System.out.println( answer);
-		
-*/
-		
-		
-		
 		System.out.println("Answer " +  answer);
-		System.out.println();
 		System.out.println();
 		System.out.println();
 		
